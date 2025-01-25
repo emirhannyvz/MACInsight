@@ -18,12 +18,10 @@ def scan_network(ip_range):
     Returns:
         list: Cihaz bilgilerini içeren bir liste.
     """
-    # ARP isteği oluştur
     arp = ARP(pdst=ip_range)
     ether = Ether(dst="ff:ff:ff:ff:ff:ff")
     packet = ether / arp
 
-    # Paketi gönder ve yanıtları al
     result = srp(packet, timeout=3, verbose=0)[0]
 
     devices = []
@@ -54,7 +52,6 @@ def identify_security_risks(devices):
     weak_passwords = ["123456", "password", "admin", "1234", "qwerty"]
     
     for device in devices:
-        # Örnek güvenlik riski: Bilinmeyen vendor
         if device["Vendor"] == "Unknown":
             risks.append({
                 "IP": device["IP"],
@@ -62,7 +59,6 @@ def identify_security_risks(devices):
                 "Risk": "Unknown vendor"
             })
         
-        # Örnek güvenlik riski: Varsayılan şifre kullanımı
         if device.get("DefaultPassword", False):
             risks.append({
                 "IP": device["IP"],
@@ -70,7 +66,6 @@ def identify_security_risks(devices):
                 "Risk": "Default password in use"
             })
         
-        # Örnek güvenlik riski: Açık kritik portlar
         critical_ports = [22, 23, 80, 443]
         open_ports = device.get("OpenPorts", [])
         for port in critical_ports:
@@ -81,7 +76,6 @@ def identify_security_risks(devices):
                     "Risk": f"Critical port {port} is open"
                 })
         
-        # Örnek güvenlik riski: Eski yazılım sürümü
         if device.get("SoftwareVersion", "").startswith("1."):
             risks.append({
                 "IP": device["IP"],
@@ -89,7 +83,6 @@ def identify_security_risks(devices):
                 "Risk": "Outdated software version"
             })
         
-        # Örnek güvenlik riski: Güvenli olmayan protokoller kullanımı
         if "Telnet" in device.get("Protocols", []):
             risks.append({
                 "IP": device["IP"],
@@ -97,7 +90,6 @@ def identify_security_risks(devices):
                 "Risk": "Insecure protocol (Telnet) in use"
             })
         
-        # Örnek güvenlik riski: Zayıf şifreleme kullanımı
         if device.get("Encryption", "") == "WEP":
             risks.append({
                 "IP": device["IP"],
@@ -105,7 +97,6 @@ def identify_security_risks(devices):
                 "Risk": "Weak encryption (WEP) in use"
             })
         
-        # Örnek güvenlik riski: Zayıf şifre kullanımı
         if device.get("Password", "") in weak_passwords:
             risks.append({
                 "IP": device["IP"],
@@ -126,17 +117,14 @@ def generate_pdf_report(devices, risks, filename):
         risks (list): Güvenlik risklerini içeren bir liste.
         filename (str): PDF dosyasının adı.
     """
-    # reports klasörünü kontrol et, yoksa oluştur
     if not os.path.exists('reports'):
         os.makedirs('reports')
 
-    # PDF dosyasını reports klasöründe oluştur
     filepath = os.path.join('reports', filename)
     
     doc = SimpleDocTemplate(filepath, pagesize=letter)
     styles = getSampleStyleSheet()
     
-    # Mevcut stilleri güncelle
     styles['Title'].fontName = 'Helvetica'
     styles['Title'].fontSize = 18
     styles['Title'].leading = 22
@@ -153,12 +141,10 @@ def generate_pdf_report(devices, risks, filename):
 
     elements = []
 
-    # Başlık
     title = Paragraph("Network Scan Report", styles['Title'])
     elements.append(title)
     elements.append(Spacer(1, 12))
 
-    # Genel açıklama
     general_description = """
     Bu rapor, ag taramasi sonucunda tespit edilen cihazlarin bilgilerini ve potansiyel guvenlik risklerini icermektedir.
     Guvenlik riskleri, asagidaki etkenlerden kaynaklanabilir:
@@ -166,7 +152,6 @@ def generate_pdf_report(devices, risks, filename):
     elements.append(Paragraph(general_description, styles['BodyText']))
     elements.append(Spacer(1, 12))
 
-    # Güvenlik riski oluşturabilecek etkenler
     risk_factors = [
         "Varsayilan veya zayif sifreler kullanilmasi",
         "Eski yazilim surumleri",
@@ -181,7 +166,6 @@ def generate_pdf_report(devices, risks, filename):
     elements.append(bullet_points)
     elements.append(Spacer(1, 12))
 
-    # Cihazlar bölümü
     elements.append(Paragraph("Devices Found:", styles['Heading2']))
     device_data = [["IP Address", "MAC Address", "Vendor"]]
     for device in devices:
@@ -200,7 +184,6 @@ def generate_pdf_report(devices, risks, filename):
     elements.append(device_table)
     elements.append(Spacer(1, 12))
 
-    # Güvenlik riskleri bölümü
     elements.append(Paragraph("Security Risks:", styles['Heading2']))
     risk_data = [["IP Address", "MAC Address", "Risk"]]
     for risk in risks:
@@ -220,7 +203,6 @@ def generate_pdf_report(devices, risks, filename):
 
     doc.build(elements)
 
-# Main function
 def main():
     ip_range = input("Enter the IP range to scan (e.g., 192.168.1.0/24): ")
     devices = scan_network(ip_range)
@@ -239,7 +221,6 @@ def main():
     for risk in risks:
         print(f"IP: {risk['IP']}, MAC: {risk['MAC']}, Risk: {risk['Risk']}")
 
-    # PDF dosyasını reports klasöründe oluşturuyoruz
     generate_pdf_report(devices, risks, "network_scan_report.pdf")
     print("\nPDF report generated: reports/network_scan_report.pdf")
 
