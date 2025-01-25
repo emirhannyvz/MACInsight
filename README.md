@@ -9,7 +9,7 @@
 | İsim            | Öğrenci No   | Rol              |
 | --------------- | ------------ | ---------------- |
 | [Emirhan Yavuz] | [2320191077] | Proje Lideri     |
-| [Hakan Akkaya]  | [232019----] | Proje Yardımcısı |
+| [Hakan Akkaya]  | [2320191089] | Proje Yardımcısı |
 
 ## 📅 Önemli Tarihler
 
