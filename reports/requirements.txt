@@ -1,0 +1,3 @@
+scapy
+mac-vendor-lookup
+reportlab
