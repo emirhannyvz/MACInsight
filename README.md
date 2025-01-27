@@ -14,7 +14,7 @@
 ## 📅 Önemli Tarihler
 
 - **Başlangıç:** 2025-01-22
-- **Teslim:** 2025-01-28
+- **Teslim:** 2025-01-25
 - **Son Güncelleme:** 2025-01-22
 
 ## 🎬 Demo Video
